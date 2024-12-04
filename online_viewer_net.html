@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinterklaas Puzzel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Sacramento&display=swap" rel="stylesheet">
+    <style>
+        /* Achtergrond en algemene styling */
+        body {
+            margin: 0;
+            padding: 0;
+            background: url('https://i.ibb.co/2kHwhmh/Afbeelding.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            flex-direction: column;
+        }
+
+        h1, h2 {
+            margin-top: 20px;
+            font-size: 50px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+        }
+
+        #content {
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 24px;
+            background-color: #ffcc00;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #ff9900;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            border-radius: 8px;
+            border: 2px solid #fff;
+            margin-top: 10px;
+        }
+
+        #success-message {
+            font-family: 'Cinzel', serif;
+            font-size: 40px;
+            color: #ffcc00;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.7);
+            margin-top: 20px;
+        }
+
+        #sub-message {
+            font-family: 'Sacramento', cursive;
+            font-size: 24px;
+            color: #ffcc00;
+            margin-top: 10px;
+        }
+
+        /* Confetti styling */
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            opacity: 0.9;
+            animation: fall 3s infinite, spin 1s infinite;
+        }
+
+        .confetti-piece:nth-child(odd) {
+            background-color: #ff6347; /* Rood */
+        }
+        .confetti-piece:nth-child(even) {
+            background-color: #32cd32; /* Groen */
+        }
+        .confetti-piece:nth-child(3n) {
+            background-color: #1e90ff; /* Blauw */
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0);
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-50px) rotate(0deg);
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Sinterklaas Puzzel!</h1>
+    <h2>Kun jij de code vinden?</h2>
+
+    <div id="content">
+        <label for="codeInput">Voer de code in:</label>
+        <input type="text" id="codeInput" placeholder="Voer de code in" onkeydown="checkEnter(event)">
+        <button onclick="checkCode()">Verstuur</button>
+        <p id="message"></p>
+    </div>
+
+    <!-- Confetti animatie -->
+    <div id="confetti" class="confetti"></div>
+
+    <div id="success-message"></div>
+    <div id="sub-message"></div>
+
+    <!-- Geluidsbestanden -->
+    <audio id="clickSound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+    <audio id="successSound" src="https://www.soundjay.com/button/coin-in-slot-01.wav" preload="auto"></audio>
+
+    <script>
+        // Geluid afspelen bij klikken
+        function playClickSound() {
+            var clickSound = document.getElementById("clickSound");
+            clickSound.play();
+        }
+
+        // Geluid afspelen bij succes
+        function playSuccessSound() {
+            var successSound = document.getElementById("successSound");
+            successSound.play();
+        }
+
+        // Check code functie
+        function checkCode() {
+            var code = document.getElementById("codeInput").value;
+            var message = document.getElementById("message");
+            var confetti = document.getElementById("confetti");
+            var successMessage = document.getElementById("success-message");
+            var subMessage = document.getElementById("sub-message");
+
+            // Verwijder de foutmelding als de gebruiker de code correct invoert
+            message.textContent = ""; 
+
+            // De juiste code is 05122024
+            if (code === "05122024") {
+                successMessage.textContent = "Goed gedaan!";
+                subMessage.textContent = "Je cadeau ligt onder de bank. Veel plezier! Groetjes, de Sint";
+                showConfetti();
+                playSuccessSound(); // Speel het succesgeluid af
+                // Verberg de invoervelden nadat de code goed is
+                document.getElementById("codeInput").style.display = "none";
+                document.querySelector("label").style.display = "none";
+                document.querySelector("button").style.display = "none"; 
+                document.querySelector("h1").style.display = "none";  // Verbergt de titel
+                document.querySelector("h2").style.display = "none";  // Verbergt de ondertitel
+            } else {
+                // Laat geen foutmelding zien
+                message.textContent = "";
+            }
+        }
+
+        // Confetti laten vallen
+        function showConfetti() {
+            var confetti = document.getElementById("confetti");
+            confetti.style.display = "block";
+            for (var i = 0; i < 200; i++) {  
+                var piece = document.createElement("div");
+                piece.classList.add("confetti-piece");
+                piece.style.left = Math.random() * window.innerWidth + "px";
+                piece.style.animationDuration = (Math.random() * 3 + 2) + "s";
+                piece.style.animationDelay = Math.random() * 3 + "s";
+                piece.style.width = Math.random() * 20 + "px"; 
+                piece.style.height = Math.random() * 20 + "px"; 
+                piece.style.animationName = "confettiFall"; 
+                confetti.appendChild(piece);
+            }
+        }
+
+        // Controleer of de Enter-toets is ingedrukt
+        function checkEnter(event) {
+            if (event.key === "Enter") {
+                playClickSound();  // Speel het klikgeluid af
+                checkCode(); // Controleer de code
+            }
+        }
+    </script>
+</body>
+</html>.  
